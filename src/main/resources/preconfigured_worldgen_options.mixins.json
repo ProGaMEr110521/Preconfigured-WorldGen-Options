@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.progamer.preconfigured_worldgen_options.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "preconfigured_worldgen_options.refmap.json",
+  "mixins": [
+    "CreateWorldScreenMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
