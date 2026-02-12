@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.PresetEditor;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
@@ -36,18 +35,12 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Mixin(value = CreateWorldScreen.class, remap = true)
+@SuppressWarnings("JavaReflectionMemberAccess")
+@Mixin(value = CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
-
-//    @Shadow
-//    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
-//        return null;
-//    }
 
     @Shadow @Final
     WorldCreationUiState uiState;
-//    @Shadow @Nullable private GridLayout bottomButtons;
-//    @Shadow @Final private TabManager tabManager;
     @Shadow @Nullable private TabNavigationBar tabNavigationBar;
 
     @Unique
@@ -65,10 +58,10 @@ public abstract class CreateWorldScreenMixin {
                             button.setMessage(Component.literal("Use Config Preset: " + (preconfigured_worldgen_options$useConfigPreset ? "ON" : "OFF")));
 
                             if (preconfigured_worldgen_options$useConfigPreset) {
-                                preconfigured_worldgen_options$applyConfigPreset(screen);
-                                preconfigured_worldgen_options$changeButtonsActiveState(screen, false);
+                                preconfigured_worldgen_options$applyConfigPreset();
+                                preconfigured_worldgen_options$changeButtonsActiveState(false);
                             } else {
-                                preconfigured_worldgen_options$changeButtonsActiveState(screen, true);
+                                preconfigured_worldgen_options$changeButtonsActiveState(true);
                             }
                         }
                 )
@@ -77,8 +70,7 @@ public abstract class CreateWorldScreenMixin {
                 .build();
 
         try {
-            Method superMethod = Screen.class.getDeclaredMethod("addRenderableWidget",
-                    net.minecraft.client.gui.components.events.GuiEventListener.class);
+            Method superMethod = Screen.class.getDeclaredMethod("m_142416_", GuiEventListener.class);
             superMethod.setAccessible(true);
             superMethod.invoke(screen, preconfigured_worldgen_options$configToggleButton);
         } catch (Exception e) {
@@ -87,8 +79,8 @@ public abstract class CreateWorldScreenMixin {
 
         if (Config.ENABLE_BUTTON.get()) {
             if (preconfigured_worldgen_options$useConfigPreset) {
-                preconfigured_worldgen_options$applyConfigPreset(screen);
-                preconfigured_worldgen_options$changeButtonsActiveState(screen, false);
+                preconfigured_worldgen_options$applyConfigPreset();
+                preconfigured_worldgen_options$changeButtonsActiveState(false);
             }
         } else {
             preconfigured_worldgen_options$configToggleButton.active = false;
@@ -98,10 +90,10 @@ public abstract class CreateWorldScreenMixin {
     }
 
     @Unique
-    private void preconfigured_worldgen_options$changeButtonsActiveState(CreateWorldScreen screen, boolean active) {
+    private void preconfigured_worldgen_options$changeButtonsActiveState(boolean active) {
         try {
             if (tabNavigationBar != null) {
-                Field tabButtonsField = TabNavigationBar.class.getDeclaredField("tabButtons");
+                Field tabButtonsField = TabNavigationBar.class.getDeclaredField("f_267495_");
                 tabButtonsField.setAccessible(true);
                 ImmutableList<TabButton> tabButtons = (ImmutableList<TabButton>) tabButtonsField.get(tabNavigationBar);
 
@@ -132,7 +124,7 @@ public abstract class CreateWorldScreenMixin {
     }
 
     @Unique
-    private void preconfigured_worldgen_options$applyConfigPreset(CreateWorldScreen screen) {
+    private void preconfigured_worldgen_options$applyConfigPreset() {
         try {
             String presetName = Config.WORLD_GEN_TYPE.get();
             ResourceLocation presetLocation = ResourceLocation.tryParse(presetName);
@@ -147,7 +139,7 @@ public abstract class CreateWorldScreenMixin {
 
             Object foundEntry = null;
             for (Object entry : presetList) {
-                Field presetField = entry.getClass().getDeclaredField("preset");
+                Field presetField = entry.getClass().getDeclaredField("f_267398_");
                 presetField.setAccessible(true);
                 Object entryPresetHolder = presetField.get(entry);
 
@@ -161,7 +153,7 @@ public abstract class CreateWorldScreenMixin {
                                 key.location().equals(presetLocation)) {
 
                             Method setWorldTypeMethod = uiState.getClass().getMethod(
-                                    "setWorldType",
+                                    "m_267576_",
                                     entry.getClass()
                             );
 
@@ -199,7 +191,7 @@ public abstract class CreateWorldScreenMixin {
 
             if (presetEditor != null) {
                 Method fixedBiomeConfiguratorMethod = PresetEditor.class.getDeclaredMethod(
-                        "fixedBiomeConfigurator",
+                        "m_232952_",
                         Holder.class
                 );
                 fixedBiomeConfiguratorMethod.setAccessible(true);
@@ -213,7 +205,7 @@ public abstract class CreateWorldScreenMixin {
                 WorldCreationContext newContext = worldCreationContext.withDimensions(dimensionsUpdater);
 
                 Method setSettingsMethod = worldCreationUiState.getClass().getMethod(
-                        "setSettings",
+                        "m_267692_",
                         WorldCreationContext.class
                 );
                 setSettingsMethod.invoke(worldCreationUiState, newContext);
