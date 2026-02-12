@@ -18,6 +18,7 @@ public class Config
             .comment("Use config preset by default instead of manual selection")
             .define("useConfigPreset", true);
 
+
     public static final ForgeConfigSpec.BooleanValue ENABLE_BUTTON = BUILDER
             .comment("Makes 'Use Config Preset' button in world creation screen active/disabled. If false, field 'useConfigPreset' is always false!")
             .define("IsUsePresetButtonActive", true);

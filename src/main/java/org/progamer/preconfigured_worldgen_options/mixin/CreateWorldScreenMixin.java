@@ -173,7 +173,7 @@ public abstract class CreateWorldScreenMixin {
             }
 
         } catch (Exception e) {
-            System.err.println("[YourMod] Failed to apply config preset: " + e.getMessage());
+            System.err.println("[PWgO] Failed to apply config preset: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -209,12 +209,10 @@ public abstract class CreateWorldScreenMixin {
                         WorldCreationContext.class
                 );
                 setSettingsMethod.invoke(worldCreationUiState, newContext);
-
-                System.out.println("Applied biome " + targetBiome + " using fixedBiomeConfigurator");
             }
 
         } catch (Exception e) {
-            System.err.println("Failed to apply biome: " + e.getMessage());
+            System.err.println("[PWgO] Failed to apply biome: " + e.getMessage());
             e.printStackTrace();
         }
     }
