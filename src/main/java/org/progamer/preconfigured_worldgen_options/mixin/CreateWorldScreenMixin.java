@@ -44,11 +44,16 @@ public abstract class CreateWorldScreenMixin {
     @Shadow @Nullable private TabNavigationBar tabNavigationBar;
 
     @Unique
+    private WorldCreationUiState.WorldTypeEntry preconfigured_worldgen_options$defaultWorldTypeEntry;
+
+    @Unique
     private boolean preconfigured_worldgen_options$useConfigPreset = Config.USE_CONFIG_PRESET.get();
 
     @Inject(method = "init", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
         CreateWorldScreen screen = (CreateWorldScreen) (Object) this;
+
+        preconfigured_worldgen_options$defaultWorldTypeEntry = uiState.getWorldType();
 
         Button preconfigured_worldgen_options$configToggleButton = Button.builder(
                         Component.literal("Use Config Preset: " + (preconfigured_worldgen_options$useConfigPreset ? "ON" : "OFF")),
@@ -61,6 +66,7 @@ public abstract class CreateWorldScreenMixin {
                                 preconfigured_worldgen_options$applyConfigPreset();
                                 preconfigured_worldgen_options$changeButtonsActiveState(false);
                             } else {
+                                preconfigured_worldgen_options$setDefaultSettings(uiState, preconfigured_worldgen_options$defaultWorldTypeEntry);
                                 preconfigured_worldgen_options$changeButtonsActiveState(true);
                             }
                         }
@@ -215,5 +221,12 @@ public abstract class CreateWorldScreenMixin {
             System.err.println("[PWgO] Failed to apply biome: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Unique
+    private void preconfigured_worldgen_options$setDefaultSettings(WorldCreationUiState worldCreationUiState, WorldCreationUiState.WorldTypeEntry worldTypeEntry) {
+        worldCreationUiState.setGenerateStructures(true);
+        worldCreationUiState.setBonusChest(false);
+        worldCreationUiState.setWorldType(worldTypeEntry);
     }
 }
