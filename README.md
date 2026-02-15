@@ -95,7 +95,7 @@ worldGenType = "minecraft:single_biome_surface"
 > - minecraft:large_biomes
 
 > [!WARNING]
-> I haven't tested if the mod can use mod world types. If you tried it, let me know.
+> I haven't tested if the mod can use modded world types. If you tried it, let me know.
 
 <br>
 <br>
@@ -117,4 +117,4 @@ enableBonusChest = false
 ```
 
 > [!NOTE]
-> Does anyone using it?
+> Does anyone use it?
